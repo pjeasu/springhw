@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+	<mapper namespace="edu.bit.ex.mapper.BoardMapper">
+
+	<!--page=2&perPageNum=10 -->
+    <select id="selectBoardListPage" resultType="edu.bit.ex.vo.BoardVO" parameterType="edu.bit.ex.page.Criteria">
+    <!-- 맨 아랫줄의 부등호(<)로 이루어진 연산자는 XML 문법으로 인식된다. ![CDATA]를 써줌으로써 XML문법이 아니라는것을 알려줌 -->
+	<![CDATA[
+	SELECT * FROM
+	(
+        SELECT
+            A.*,
+            ROWNUM AS RNUM,
+            COUNT(*) OVER() AS TOTCNT
+        FROM
+            (
+               select bId, bName, bTitle, bContent, bDate, bHit, bGroup, bStep, bIndent 
+		from mvc_board order by bGroup desc, bStep asc	
+             
+            ) A
+    )WHERE RNUM >= #{startNum} AND RNUM <= #{endNum}
+  	]]>
+	</select>
+	
+</mapper>
